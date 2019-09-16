@@ -20,9 +20,13 @@ if [ ! -f /data/service.json ]; then
    	exit
    fi
 
+   pyenv global system
+   python setup.py
+
+   pyenv global 2.7.16
+
    # Create service credentials file and configure gcloud
    echo "Authenticating service account"
-   echo $GOOGLE_IOT_SERVICE_JSON > /data/service.json
    gcloud config set disable_prompts true
    gcloud auth activate-service-account --key-file=/data/service.json
    gcloud config set project $GOOGLE_IOT_PROJECT
@@ -40,7 +44,7 @@ if [ ! -f /data/service.json ]; then
    openssl ec -in rsa-ec_private.pem -pubout -out rsa-ec_public.pem
 
    # Register as Google IoT device with the keys created above
-   gcloud iot devices create $RESIN_DEVICE_UUID \
+   gcloud iot devices create 'mui-'$RESIN_DEVICE_UUID \
          --project=$GOOGLE_IOT_PROJECT \
          --region=$GOOGLE_IOT_REGION \
          --registry=$GOOGLE_IOT_REGISTRY \
@@ -49,4 +53,7 @@ if [ ! -f /data/service.json ]; then
    cd -
 fi
 
-node index.js
+pyenv global system
+python -V
+
+python main.py

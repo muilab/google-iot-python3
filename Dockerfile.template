@@ -1,4 +1,31 @@
-FROM resin/%%RESIN_MACHINE_NAME%%-debian:stretch
+FROM balenalib/%%BALENA_MACHINE_NAME%%-python:3.5.7-stretch-run
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install pyenv for google-cloud-sdk
+RUN install_packages git && \
+    git clone https://github.com/pyenv/pyenv.git pyenv
+
+# Set path
+ENV PYENV_ROOT /usr/src/app/pyenv
+ENV PATH $PATH:$PYENV_ROOT/bin
+
+RUN pwd && \
+    ls -l && \
+    echo $PYENV_ROOT && \
+    echo $PATH && \
+    eval "$(pyenv init -)"
+
+RUN apt-get update && \
+    apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+
+# Install python v2.7.16
+RUN echo pyenv -v && \
+    pyenv install 2.7.16
+
 
 # Install the google cloud SDK
 RUN export CLOUD_SDK_REPO="cloud-sdk-stretch" && \
@@ -6,19 +33,8 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-stretch" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -y && apt-get install google-cloud-sdk -y
 
-# Install LTS Node.js
-RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - && \
-   apt-get install -y nodejs && \
-   apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install npm modules and copy the app
-WORKDIR /usr/src/app
-
-COPY package.json package.json
-RUN JOBS=MAX npm install --production --unsafe-perm && rm -rf /tmp/*
-
 # Move app to filesystem
 COPY . ./
 
 # Start app
-CMD ["bash", "/usr/src/app/start.sh"]
+CMD ["bash", "start.sh"]
