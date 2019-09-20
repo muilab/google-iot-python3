@@ -27,13 +27,13 @@ This project shows you how to use Google Cloud IoT with balena to automatically 
 
 3. Enter `my-registry` for the Registry ID.
 
-4. Select `us-central1` for the Cloud region.
+4. Select `us-asia1` for the Cloud region.
 
 5. Select `MQTT` for the Protocol.
 
 6. In the Telemetry topic dropdown list, select Create a topic.
 
-7. In the Create a topic dialog, enter `my-device-events` in the Name field.
+7. In the Create a topic dialog, enter `device-events` in the Name field.
 
 8. Click Create in the Create a topic dialog.
 
@@ -44,12 +44,14 @@ This project shows you how to use Google Cloud IoT with balena to automatically 
 You've just created a device registry with a Cloud Pub/Sub topic for publishing device telemetry events.
 
 ## Create role and credentials
-
+  
+This project changed from originally regarding add pub/sub role. Because we want use Pub/Sub SDK for be more easier this sample.  
+  
 1. Go to the [GCP Roles page](https://console.cloud.google.com/iam-admin/roles)
 2. Click Create role
 3. Name it `Create IoT Device`
 4. Click Add permission
-5. Enter `cloudiot.devices.create` and save
+5. Enter `cloudiot.devices.create`, `pubsub.subscriptions.consume`, `pubsub.topics.publish` and save
 6. Go to the [GCP Credentials page](https://console.cloud.google.com/apis/credentials)
 7. Click Create Credentials and select `Service account key` from the drop down
 8. Create a new service account, and assign _only_ the `Create IoT Device` role to it, this limited scope is required as these credentials will be available on the device, and could potentially get exposed if the device is physically compromised
@@ -60,7 +62,7 @@ Go to the [balena dashboard](https://dashboard.balena-cloud.com/apps) and create
 
 Click Environment Variables and create the following keys and matching values:
 1. `GOOGLE_IOT_PROJECT` and enter the Project Id for your GCP Project, you can find that on the [GCP Home page](https://console.cloud.google.com/home)
-2. `GOOGLE_IOT_REGION` and enter the GCP region you selected above (`us-central1`)
+2. `GOOGLE_IOT_REGION` and enter the GCP region you selected above (`us-asia1`)
 3. `GOOGLE_IOT_REGISTRY` and enter the device registry name you've selected above (`my-registry`)
 4. `GOOGLE_IOT_SERVICE_JSON` and paste the entire content of the credentials json file you've downloaded above as value
 
@@ -74,7 +76,7 @@ Once the device is online, the sample app will start pushing event messages with
 device, which will be visible in the logs viewer in the balena dashboard.
 
 You can retrieve and view published messages from Pub/Sub using the gcloud CLI:
-1. Go to the GCP Pub/Sub page and click on `my-device-events` topic.
+1. Go to the GCP Pub/Sub page and click on `device-events` topic.
 2. Click `Create Subscription` in the top toolbar.
 3. Enter `my-subscription` as the subscription name.
 4. Click Create.
@@ -89,7 +91,7 @@ You can then view the messages by running the following command in your terminal
 
 Build your own application using this sample app, or the Google samples for C, Java, NodeJS and Python available at https://cloud.google.com/iot/docs/samples/mqtt-samples
 
-When building your app, or using one of the samples, use the private key available at `/data/rsa-priv.pem`, and `GOOGLE_IOT_REGION, GOOGLE_IOT_PROJECT and GOOGLE_IOT_REGISTRY`
+When building your app, or using one of the samples, use the private key available at `/data/rsa-priv.pem`, service credencial json available at `/data/service.json`, and `GOOGLE_IOT_REGION, GOOGLE_IOT_PROJECT and GOOGLE_IOT_REGISTRY`
 environment variables to configure your client.
 
 An overview of Google's cloud services that can be used to ingest, transform, and run analytics on the data is available at: https://cloud.google.com/solutions/iot-overview
