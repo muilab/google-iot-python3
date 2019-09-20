@@ -35,7 +35,7 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-stretch" && \
 
 # Install Cloud Pub/Sub SDK
 RUN pip install -U pip && \
-    pip install -U google-auth google-cloud-pubsub && \
+    pip install -U PyJWT cryptography paho-mqtt
 
 
 # Move app to filesystem

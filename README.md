@@ -45,13 +45,11 @@ You've just created a device registry with a Cloud Pub/Sub topic for publishing 
 
 ## Create role and credentials
   
-This project changed from originally regarding add pub/sub role. Because we want use Pub/Sub SDK for be more easier this sample.  
-  
 1. Go to the [GCP Roles page](https://console.cloud.google.com/iam-admin/roles)
 2. Click Create role
 3. Name it `Create IoT Device`
 4. Click Add permission
-5. Enter `cloudiot.devices.create`, `pubsub.subscriptions.consume`, `pubsub.topics.publish` and save
+5. Enter `cloudiot.devices.create`and save
 6. Go to the [GCP Credentials page](https://console.cloud.google.com/apis/credentials)
 7. Click Create Credentials and select `Service account key` from the drop down
 8. Create a new service account, and assign _only_ the `Create IoT Device` role to it, this limited scope is required as these credentials will be available on the device, and could potentially get exposed if the device is physically compromised
